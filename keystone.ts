@@ -3,6 +3,7 @@ import { config } from "@keystone-6/core";
 import { createAuth } from "@keystone-6/auth";
 import { statelessSessions } from "@keystone-6/core/session";
 import { lists } from "./schema";
+import { insertSeedData } from "./seed-data";
 
 const session = statelessSessions({
   maxAge: parseInt(
@@ -38,10 +39,10 @@ export default withAuth(
       url: process.env.DATABASE_URL || "postgres://localhost:5432/api-dev",
       onConnect: async (context) => {
         console.log("💾 Connected to database");
-        // if (process.argv.includes("--seed-data")) {
-        //   context.session = {};
-        //   await insertSeedData(context);
-        // }
+        if (process.argv.includes("--seed-data")) {
+          context.session = { data: { isAdmin: true } };
+          await insertSeedData(context);
+        }
       },
       // Optional advanced configuration
       enableLogging: true,
