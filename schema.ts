@@ -103,6 +103,19 @@ export const lists = {
       filter: {
         query: ({ session }) => {
           if (session?.data?.isAdmin) return {};
+          if (session?.data?.id) {
+            return {
+              memberships: {
+                some: {
+                  owner: {
+                    id: {
+                      equals: session?.data?.id,
+                    },
+                  },
+                },
+              },
+            };
+          }
           return { status: { equals: "PUBLIC" } };
         },
       },

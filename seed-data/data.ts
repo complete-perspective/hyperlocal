@@ -16,7 +16,7 @@ export const people = [
       create: [
         {
           nickname: "SalSal",
-          bio: "I am a software engineer",
+          bio: "I am a Graphic Designer",
         },
       ],
     },
@@ -33,15 +33,19 @@ export const people = [
     },
   },
   {
-    name: "Bobby",
+    name: "Bob",
     email: "bob@example.com",
     password: "Password123!",
     isAdmin: false,
     profiles: {
       create: [
         {
-          nickname: "BoB",
-          bio: "I am a graphic designer",
+          nickname: "Bobster",
+          bio: "I am a Software Engineer",
+        },
+        {
+          nickname: "BoBBY",
+          bio: "Builder of things",
         },
       ],
     },
@@ -51,6 +55,13 @@ export const people = [
           community: {
             connect: {
               slug: "hyperlocal-public",
+            },
+          },
+        },
+        {
+          community: {
+            connect: {
+              slug: "hyperlocal-private",
             },
           },
         },
