@@ -1,4 +1,4 @@
-# hyperlocal-web
+# hyperlocal
 
 An open source, privacy focused, community engagement platform
 
