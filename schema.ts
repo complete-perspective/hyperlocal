@@ -7,7 +7,6 @@ import {
   select,
   relationship,
 } from "@keystone-6/core/fields";
-import { profile } from "console";
 
 export type Session = {
   listKey: string;
