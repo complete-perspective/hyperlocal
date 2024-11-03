@@ -25,7 +25,7 @@ export const people = [
         {
           community: {
             connect: {
-              slug: "hyperlocal-public",
+              slug: "community",
             },
           },
         },
@@ -54,14 +54,14 @@ export const people = [
         {
           community: {
             connect: {
-              slug: "hyperlocal-public",
+              slug: "community",
             },
           },
         },
         {
           community: {
             connect: {
-              slug: "hyperlocal-private",
+              slug: "private",
             },
           },
         },
@@ -74,13 +74,13 @@ export const communities = [
   {
     name: "Hyperlocal Public",
     description: "This is a public community",
-    slug: "hyperlocal-public",
+    slug: "community",
     status: CommunityStatusType.PUBLIC,
   },
   {
     name: "Hyperlocal Private",
     description: "This is a private community",
-    slug: "hyperlocal-private",
+    slug: "private",
     status: CommunityStatusType.PRIVATE,
   },
 ];
