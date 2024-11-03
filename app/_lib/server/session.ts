@@ -131,22 +131,19 @@ export function ironSessions<Session extends SessionData>({
         sessionOptions
       );
 
-      session.listKey = data?.listKey;
-      session.itemId = data?.itemId;
-
       try {
         const person = await keystoneContext
-          .withSession(session)
+          .withSession({ data: { isAdmin: true } })
           .query.Person.findOne({
             where: { id: data?.itemId },
             query: "id name email isAdmin",
           });
 
         session.data = {
-          id: person.id,
-          name: person.name,
-          email: person.email,
-          isAdmin: person.isAdmin,
+          id: person?.id,
+          name: person?.name,
+          email: person?.email,
+          isAdmin: person?.isAdmin,
         };
 
         await session.save();

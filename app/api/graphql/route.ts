@@ -1,6 +1,7 @@
 import { createYoga } from "graphql-yoga";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { keystoneContext } from "@/app/server/keystone";
+import { defaultQuery } from "@/app/server/helpers/graphiql";
 
 // Use Keystone's context to create GraphQL handler
 const handleRequest = createYoga<{
@@ -13,7 +14,7 @@ const handleRequest = createYoga<{
     return keystoneContext.withSession().withRequest(req, res);
   },
   graphiql: {
-    defaultQuery: `# Welcome to the GraphQL playground!\n`,
+    defaultQuery,
   },
   fetchAPI: { Response, Request },
 });

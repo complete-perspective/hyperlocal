@@ -1,15 +1,14 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/app/server/auth";
+import { getCommunity } from "@/app/server/actions/getCommunity";
 
-export default async function ProtectedLayout({
+export default async function CommunityLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { slug: string };
 }) {
-  if (!(await auth.isAuthenticated())) {
-    redirect("/");
-  }
+  const community = await getCommunity(params?.slug);
 
   return (
     <>
@@ -17,7 +16,7 @@ export default async function ProtectedLayout({
         <nav>
           <ul>
             <li>
-              <Link href="/">Home</Link>
+              <Link href={`/${community.slug}`}>Home</Link>
             </li>
           </ul>
         </nav>

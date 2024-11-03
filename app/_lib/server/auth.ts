@@ -4,6 +4,7 @@ import { SessionData, sessionOptions } from "./session";
 
 export const auth = {
   isAuthenticated,
+  getSession,
 };
 
 async function isAuthenticated() {
@@ -18,5 +19,20 @@ async function isAuthenticated() {
     return false;
   } catch {
     return false;
+  }
+}
+
+async function getSession() {
+  try {
+    const session = await getIronSession<SessionData>(
+      cookies(),
+      sessionOptions
+    );
+    if (session?.data) {
+      return session;
+    }
+    return { data: null };
+  } catch {
+    return { data: null };
   }
 }
