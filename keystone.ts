@@ -37,6 +37,7 @@ export default withAuth(
     db: {
       provider: "postgresql",
       url: process.env.DATABASE_URL || "postgres://localhost:5432/api-dev",
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onConnect: async (context) => {
         console.log("💾 Connected to database");
         // if (process.argv.includes("--seed-data")) {

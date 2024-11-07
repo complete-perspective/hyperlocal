@@ -6,9 +6,9 @@ export default async function CommunityLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { slug: string };
+  params: { community: string };
 }) {
-  const community = await getCommunity(params?.slug);
+  const community = await getCommunity(params?.community);
 
   return (
     <>
@@ -21,7 +21,7 @@ export default async function CommunityLayout({
           </ul>
         </nav>
       </header>
-      <main>{children}</main>
+      {children}
     </>
   );
 }

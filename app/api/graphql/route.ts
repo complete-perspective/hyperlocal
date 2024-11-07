@@ -11,7 +11,7 @@ const handleRequest = createYoga<{
   graphqlEndpoint: "/api/graphql",
   schema: keystoneContext.graphql.schema,
   context: async ({ req, res }) => {
-    return keystoneContext.withSession().withRequest(req, res);
+    return keystoneContext.withRequest(req, res);
   },
   graphiql: {
     defaultQuery,
