@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "hyperlocal.box",
+  title: "colpitts.dev",
   description: "An open source, privacy focused, community engagement platform",
 };
 
