@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { getCommunity } from "@/app/server/actions/getCommunity";
+import { getCourse } from "@/app/_lib/server/actions/getCourse";
 
-export default async function CommunityLayout({
+export default async function CourseLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { community: string };
+  params: { slug: string };
 }) {
-  const community = await getCommunity(params?.community);
+  const course = await getCourse(params?.slug);
 
   return (
     <>
@@ -16,7 +16,7 @@ export default async function CommunityLayout({
         <nav>
           <ul>
             <li>
-              <Link href={`/${community.slug}`}>Home</Link>
+              <Link href={`/courses/${course.slug}`}>Home</Link>
             </li>
           </ul>
         </nav>

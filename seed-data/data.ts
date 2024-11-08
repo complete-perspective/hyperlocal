@@ -1,4 +1,4 @@
-import { CommunityStatusType } from "@prisma/client";
+import { CourseStatusType } from "@prisma/client";
 
 export const people = [
   {
@@ -12,24 +12,11 @@ export const people = [
     email: "sally@example.com",
     password: "Password123!",
     isAdmin: false,
-    profiles: {
-      create: [
-        {
-          nickname: "SalSal",
-          bio: "I am a Graphic Designer",
-        },
-      ],
-    },
-    memberships: {
-      create: [
-        {
-          community: {
-            connect: {
-              slug: "community",
-            },
-          },
-        },
-      ],
+    profile: {
+      create: {
+        nickname: "SalSal",
+        bio: "I am a Graphic Designer",
+      },
     },
   },
   {
@@ -37,50 +24,80 @@ export const people = [
     email: "bob@example.com",
     password: "Password123!",
     isAdmin: false,
-    profiles: {
-      create: [
-        {
-          nickname: "Bobster",
-          bio: "I am a Software Engineer",
-        },
-        {
-          nickname: "BoBBY",
-          bio: "Builder of things",
-        },
-      ],
-    },
-    memberships: {
-      create: [
-        {
-          community: {
-            connect: {
-              slug: "community",
-            },
-          },
-        },
-        {
-          community: {
-            connect: {
-              slug: "private",
-            },
-          },
-        },
-      ],
+    profile: {
+      create: {
+        nickname: "BoBBY",
+        bio: "Builder of things",
+      },
     },
   },
 ];
 
-export const communities = [
+export const courses = [
   {
-    name: "Hyperlocal Public",
-    description: "This is a public community",
-    slug: "community",
-    status: CommunityStatusType.PUBLIC,
+    title: "Alpha Course",
+    description: "This is a public (free) course",
+    slug: "alpha-course",
+    status: CourseStatusType.PUBLIC,
   },
   {
-    name: "Hyperlocal Private",
-    description: "This is a private community",
-    slug: "private",
-    status: CommunityStatusType.PRIVATE,
+    title: "Bravo Course",
+    description: "This course requires a membership",
+    slug: "bravo-course",
+    status: CourseStatusType.PRIVATE,
+  },
+  {
+    title: "Charlie Course",
+    description: "This course requires a membership",
+    slug: "charlie-course",
+    status: CourseStatusType.PRIVATE,
+  },
+  {
+    title: "Delta Course",
+    description: "This course requires a membership",
+    slug: "delta-course",
+    status: CourseStatusType.PRIVATE,
+  },
+];
+
+export const memberships = [
+  {
+    owner: {
+      connect: {
+        email: "sally@example.com",
+      },
+    },
+    courses: {
+      connect: {
+        slug: "alpha-course",
+      },
+    },
+    learnerProfile: {
+      connect: {
+        nickname: "SalSal",
+      },
+    },
+  },
+  {
+    owner: {
+      connect: {
+        email: "bob@example.com",
+      },
+    },
+    courses: {
+      connect: [
+        {
+          slug: "bravo-course",
+        },
+        {
+          slug: "charlie-course",
+        },
+      ],
+    },
+    learnerProfile: {
+      connect: {
+        nickname: "BoBBY",
+      },
+    },
   },
 ];

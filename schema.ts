@@ -71,7 +71,7 @@ export const lists = {
       password: password(),
       isAdmin: checkbox(),
       memberships: relationship({ ref: "Membership.owner", many: true }),
-      profiles: relationship({ ref: "Profile.owner", many: true }),
+      profile: relationship({ ref: "Profile.owner" }),
     },
   }),
   Profile: list({
@@ -85,13 +85,13 @@ export const lists = {
       },
     },
     fields: {
-      owner: relationship({ ref: "Person.profiles", many: false }),
-      nickname: text(),
+      owner: relationship({ ref: "Person.profile" }),
+      nickname: text({ validation: { isRequired: true }, isIndexed: "unique" }),
       bio: text(),
       avatar: text(),
     },
   }),
-  Community: list({
+  Course: list({
     access: {
       operation: {
         query: allowAll,
@@ -104,15 +104,20 @@ export const lists = {
           if (session?.data?.isAdmin) return {};
           if (session?.data?.id) {
             return {
-              memberships: {
-                some: {
-                  owner: {
-                    id: {
-                      equals: session?.data?.id,
+              OR: [
+                {
+                  memberships: {
+                    some: {
+                      owner: {
+                        id: {
+                          equals: session?.data?.id,
+                        },
+                      },
                     },
                   },
                 },
-              },
+                { status: { equals: "PUBLIC" } },
+              ],
             };
           }
           return { status: { equals: "PUBLIC" } };
@@ -120,9 +125,9 @@ export const lists = {
       },
     },
     fields: {
-      name: text({ validation: { isRequired: true } }),
-      slug: text({ validation: { isRequired: true }, isIndexed: "unique" }),
+      title: text({ validation: { isRequired: true } }),
       description: text(),
+      slug: text({ validation: { isRequired: true }, isIndexed: "unique" }),
       status: select({
         type: "enum",
         options: [
@@ -132,7 +137,7 @@ export const lists = {
         defaultValue: "PRIVATE",
         ui: { displayMode: "segmented-control" },
       }),
-      memberships: relationship({ ref: "Membership.community", many: true }),
+      memberships: relationship({ ref: "Membership.courses", many: true }),
     },
   }),
   Membership: list({
@@ -146,9 +151,9 @@ export const lists = {
       },
     },
     fields: {
-      owner: relationship({ ref: "Person.memberships", many: false }),
-      community: relationship({ ref: "Community.memberships", many: false }),
-      communityProfile: relationship({ ref: "Profile", many: false }),
+      owner: relationship({ ref: "Person.memberships" }),
+      courses: relationship({ ref: "Course.memberships", many: true }),
+      learnerProfile: relationship({ ref: "Profile" }),
     },
   }),
 };

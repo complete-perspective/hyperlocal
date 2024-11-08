@@ -1,7 +1,6 @@
 import { KeystoneContext } from "@keystone-6/core/types";
 import type { TypeInfo } from ".keystone/types";
-
-import { communities, people } from "./data";
+import { courses, people, memberships } from "./data";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function deleteLists(lists: string[], context: KeystoneContext<any>) {
@@ -24,22 +23,28 @@ export async function insertSeedData(context: KeystoneContext<TypeInfo>) {
   console.log("🚨 Resetting database...");
 
   // DESTROY all existing lists
-  const lists = ["Person", "Community", "Profile", "Membership"];
+  const lists = ["Person", "Course", "Profile", "Membership"];
 
   await deleteLists(lists, context);
 
-  console.log(`🪴 Inserting seed data`);
+  console.log(`🌱 Inserting seed data`);
 
   // CREATE seed data
-  for (const community of communities) {
-    await context.query.Community.createOne({
-      data: community,
+  for (const course of courses) {
+    await context.query.Course.createOne({
+      data: course,
     });
   }
 
   for (const person of people) {
     await context.query.Person.createOne({
       data: person,
+    });
+  }
+
+  for (const membership of memberships) {
+    await context.query.Membership.createOne({
+      data: membership,
     });
   }
 

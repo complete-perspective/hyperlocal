@@ -9,8 +9,7 @@ type Person {
   isAdmin: Boolean
   memberships(where: MembershipWhereInput! = {}, orderBy: [MembershipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MembershipWhereUniqueInput): [Membership!]
   membershipsCount(where: MembershipWhereInput! = {}): Int
-  profiles(where: ProfileWhereInput! = {}, orderBy: [ProfileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProfileWhereUniqueInput): [Profile!]
-  profilesCount(where: ProfileWhereInput! = {}): Int
+  profile: Profile
 }
 
 type PasswordState {
@@ -32,7 +31,7 @@ input PersonWhereInput {
   password: PasswordFilter
   isAdmin: BooleanFilter
   memberships: MembershipManyRelationFilter
-  profiles: ProfileManyRelationFilter
+  profile: ProfileWhereInput
 }
 
 input IDFilter {
@@ -95,12 +94,6 @@ input MembershipManyRelationFilter {
   none: MembershipWhereInput
 }
 
-input ProfileManyRelationFilter {
-  every: ProfileWhereInput
-  some: ProfileWhereInput
-  none: ProfileWhereInput
-}
-
 input PersonOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -119,7 +112,7 @@ input PersonUpdateInput {
   password: String
   isAdmin: Boolean
   memberships: MembershipRelateToManyForUpdateInput
-  profiles: ProfileRelateToManyForUpdateInput
+  profile: ProfileRelateToOneForUpdateInput
 }
 
 input MembershipRelateToManyForUpdateInput {
@@ -129,11 +122,10 @@ input MembershipRelateToManyForUpdateInput {
   connect: [MembershipWhereUniqueInput!]
 }
 
-input ProfileRelateToManyForUpdateInput {
-  disconnect: [ProfileWhereUniqueInput!]
-  set: [ProfileWhereUniqueInput!]
-  create: [ProfileCreateInput!]
-  connect: [ProfileWhereUniqueInput!]
+input ProfileRelateToOneForUpdateInput {
+  create: ProfileCreateInput
+  connect: ProfileWhereUniqueInput
+  disconnect: Boolean
 }
 
 input PersonUpdateArgs {
@@ -147,7 +139,7 @@ input PersonCreateInput {
   password: String
   isAdmin: Boolean
   memberships: MembershipRelateToManyForCreateInput
-  profiles: ProfileRelateToManyForCreateInput
+  profile: ProfileRelateToOneForCreateInput
 }
 
 input MembershipRelateToManyForCreateInput {
@@ -155,9 +147,9 @@ input MembershipRelateToManyForCreateInput {
   connect: [MembershipWhereUniqueInput!]
 }
 
-input ProfileRelateToManyForCreateInput {
-  create: [ProfileCreateInput!]
-  connect: [ProfileWhereUniqueInput!]
+input ProfileRelateToOneForCreateInput {
+  create: ProfileCreateInput
+  connect: ProfileWhereUniqueInput
 }
 
 type Profile {
@@ -170,6 +162,7 @@ type Profile {
 
 input ProfileWhereUniqueInput {
   id: ID
+  nickname: String
 }
 
 input ProfileWhereInput {
@@ -220,79 +213,80 @@ input PersonRelateToOneForCreateInput {
   connect: PersonWhereUniqueInput
 }
 
-type Community {
+type Course {
   id: ID!
-  name: String
-  slug: String
+  title: String
   description: String
-  status: CommunityStatusType
+  slug: String
+  status: CourseStatusType
   memberships(where: MembershipWhereInput! = {}, orderBy: [MembershipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MembershipWhereUniqueInput): [Membership!]
   membershipsCount(where: MembershipWhereInput! = {}): Int
 }
 
-enum CommunityStatusType {
+enum CourseStatusType {
   PUBLIC
   PRIVATE
 }
 
-input CommunityWhereUniqueInput {
+input CourseWhereUniqueInput {
   id: ID
   slug: String
 }
 
-input CommunityWhereInput {
-  AND: [CommunityWhereInput!]
-  OR: [CommunityWhereInput!]
-  NOT: [CommunityWhereInput!]
+input CourseWhereInput {
+  AND: [CourseWhereInput!]
+  OR: [CourseWhereInput!]
+  NOT: [CourseWhereInput!]
   id: IDFilter
-  name: StringFilter
-  slug: StringFilter
+  title: StringFilter
   description: StringFilter
-  status: CommunityStatusTypeNullableFilter
+  slug: StringFilter
+  status: CourseStatusTypeNullableFilter
   memberships: MembershipManyRelationFilter
 }
 
-input CommunityStatusTypeNullableFilter {
-  equals: CommunityStatusType
-  in: [CommunityStatusType!]
-  notIn: [CommunityStatusType!]
-  not: CommunityStatusTypeNullableFilter
+input CourseStatusTypeNullableFilter {
+  equals: CourseStatusType
+  in: [CourseStatusType!]
+  notIn: [CourseStatusType!]
+  not: CourseStatusTypeNullableFilter
 }
 
-input CommunityOrderByInput {
+input CourseOrderByInput {
   id: OrderDirection
-  name: OrderDirection
-  slug: OrderDirection
+  title: OrderDirection
   description: OrderDirection
+  slug: OrderDirection
   status: OrderDirection
 }
 
-input CommunityUpdateInput {
-  name: String
-  slug: String
+input CourseUpdateInput {
+  title: String
   description: String
-  status: CommunityStatusType
+  slug: String
+  status: CourseStatusType
   memberships: MembershipRelateToManyForUpdateInput
 }
 
-input CommunityUpdateArgs {
-  where: CommunityWhereUniqueInput!
-  data: CommunityUpdateInput!
+input CourseUpdateArgs {
+  where: CourseWhereUniqueInput!
+  data: CourseUpdateInput!
 }
 
-input CommunityCreateInput {
-  name: String
-  slug: String
+input CourseCreateInput {
+  title: String
   description: String
-  status: CommunityStatusType
+  slug: String
+  status: CourseStatusType
   memberships: MembershipRelateToManyForCreateInput
 }
 
 type Membership {
   id: ID!
   owner: Person
-  community: Community
-  communityProfile: Profile
+  courses(where: CourseWhereInput! = {}, orderBy: [CourseOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CourseWhereUniqueInput): [Course!]
+  coursesCount(where: CourseWhereInput! = {}): Int
+  learnerProfile: Profile
 }
 
 input MembershipWhereUniqueInput {
@@ -305,8 +299,14 @@ input MembershipWhereInput {
   NOT: [MembershipWhereInput!]
   id: IDFilter
   owner: PersonWhereInput
-  community: CommunityWhereInput
-  communityProfile: ProfileWhereInput
+  courses: CourseManyRelationFilter
+  learnerProfile: ProfileWhereInput
+}
+
+input CourseManyRelationFilter {
+  every: CourseWhereInput
+  some: CourseWhereInput
+  none: CourseWhereInput
 }
 
 input MembershipOrderByInput {
@@ -315,20 +315,15 @@ input MembershipOrderByInput {
 
 input MembershipUpdateInput {
   owner: PersonRelateToOneForUpdateInput
-  community: CommunityRelateToOneForUpdateInput
-  communityProfile: ProfileRelateToOneForUpdateInput
+  courses: CourseRelateToManyForUpdateInput
+  learnerProfile: ProfileRelateToOneForUpdateInput
 }
 
-input CommunityRelateToOneForUpdateInput {
-  create: CommunityCreateInput
-  connect: CommunityWhereUniqueInput
-  disconnect: Boolean
-}
-
-input ProfileRelateToOneForUpdateInput {
-  create: ProfileCreateInput
-  connect: ProfileWhereUniqueInput
-  disconnect: Boolean
+input CourseRelateToManyForUpdateInput {
+  disconnect: [CourseWhereUniqueInput!]
+  set: [CourseWhereUniqueInput!]
+  create: [CourseCreateInput!]
+  connect: [CourseWhereUniqueInput!]
 }
 
 input MembershipUpdateArgs {
@@ -338,18 +333,13 @@ input MembershipUpdateArgs {
 
 input MembershipCreateInput {
   owner: PersonRelateToOneForCreateInput
-  community: CommunityRelateToOneForCreateInput
-  communityProfile: ProfileRelateToOneForCreateInput
+  courses: CourseRelateToManyForCreateInput
+  learnerProfile: ProfileRelateToOneForCreateInput
 }
 
-input CommunityRelateToOneForCreateInput {
-  create: CommunityCreateInput
-  connect: CommunityWhereUniqueInput
-}
-
-input ProfileRelateToOneForCreateInput {
-  create: ProfileCreateInput
-  connect: ProfileWhereUniqueInput
+input CourseRelateToManyForCreateInput {
+  create: [CourseCreateInput!]
+  connect: [CourseWhereUniqueInput!]
 }
 
 """
@@ -370,12 +360,12 @@ type Mutation {
   updateProfiles(data: [ProfileUpdateArgs!]!): [Profile]
   deleteProfile(where: ProfileWhereUniqueInput!): Profile
   deleteProfiles(where: [ProfileWhereUniqueInput!]!): [Profile]
-  createCommunity(data: CommunityCreateInput!): Community
-  createCommunities(data: [CommunityCreateInput!]!): [Community]
-  updateCommunity(where: CommunityWhereUniqueInput!, data: CommunityUpdateInput!): Community
-  updateCommunities(data: [CommunityUpdateArgs!]!): [Community]
-  deleteCommunity(where: CommunityWhereUniqueInput!): Community
-  deleteCommunities(where: [CommunityWhereUniqueInput!]!): [Community]
+  createCourse(data: CourseCreateInput!): Course
+  createCourses(data: [CourseCreateInput!]!): [Course]
+  updateCourse(where: CourseWhereUniqueInput!, data: CourseUpdateInput!): Course
+  updateCourses(data: [CourseUpdateArgs!]!): [Course]
+  deleteCourse(where: CourseWhereUniqueInput!): Course
+  deleteCourses(where: [CourseWhereUniqueInput!]!): [Course]
   createMembership(data: MembershipCreateInput!): Membership
   createMemberships(data: [MembershipCreateInput!]!): [Membership]
   updateMembership(where: MembershipWhereUniqueInput!, data: MembershipUpdateInput!): Membership
@@ -412,9 +402,9 @@ type Query {
   profile(where: ProfileWhereUniqueInput!): Profile
   profiles(where: ProfileWhereInput! = {}, orderBy: [ProfileOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProfileWhereUniqueInput): [Profile!]
   profilesCount(where: ProfileWhereInput! = {}): Int
-  community(where: CommunityWhereUniqueInput!): Community
-  communities(where: CommunityWhereInput! = {}, orderBy: [CommunityOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CommunityWhereUniqueInput): [Community!]
-  communitiesCount(where: CommunityWhereInput! = {}): Int
+  course(where: CourseWhereUniqueInput!): Course
+  courses(where: CourseWhereInput! = {}, orderBy: [CourseOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CourseWhereUniqueInput): [Course!]
+  coursesCount(where: CourseWhereInput! = {}): Int
   membership(where: MembershipWhereUniqueInput!): Membership
   memberships(where: MembershipWhereInput! = {}, orderBy: [MembershipOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MembershipWhereUniqueInput): [Membership!]
   membershipsCount(where: MembershipWhereInput! = {}): Int
